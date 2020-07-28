@@ -10,3 +10,11 @@ W.IS_DEV = IS_DEV;
 
 // 接口地址
 export const BASE_API_ROOT = MAIN_CONFIG.BASE_API_ROOT;
+
+
+export const EWEBEDITOR_URL = '/ewebeditor/ewebeditor.htm';
+export const EWEBEDITOR_STYLE = 'expand600';
+export const EWEBEDITOR_SKIN = 'flat10';
+export function create_ewebeditor_src(editor_key) {
+  return `${EWEBEDITOR_URL}?id=content${editor_key}&style=${EWEBEDITOR_STYLE}&skin=${EWEBEDITOR_SKIN}`;
+}

@@ -8,8 +8,4 @@ export const MODULES_INFO = [
     name: 'statistic',
     route: 'statistic',
   },
-  {
-    name: 'test',
-    route: 'test',
-  },
 ];
