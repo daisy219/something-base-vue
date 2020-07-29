@@ -1,0 +1,191 @@
+@charset 'utf-8';
+/*video-player*/
+body {
+	font: 12px "微软雅黑","宋体",sans-serif;
+	margin:0px;padding:0px;
+}
+#canvas-player {
+	position: relative;
+	width: 920px;
+	margin: 0 auto;
+}
+.stopBtn, .playbtn, .ui-slider .ui-slider-handle, .pausebtn, .canvas-player-mute {
+	background: none;
+	border: none;
+	background-image: url(player-bg-sprite.png);
+	background-repeat: no-repeat;
+}
+	/*canvas*/
+	#canvas-container {
+		border: 1px solid #060001;
+		border-bottom: none;
+	}
+	#track-canvas {
+		position:relative;
+		width: 920px;
+		height: 480px;
+		z-index: 999;
+	}
+		/*brush to draw*/
+		#brush {
+			display:none;
+			position:absolute;
+			width: 63px;
+			height: 66px;
+			background-image:url(mouse.png);
+			z-index:999;
+		}
+	#question-layer-bg {
+		position:absolute;
+		width:920px;
+		height:480px;
+		border: none;
+		z-index:-9999;
+	}
+	.canvas-player-header {
+		height: 35px;
+		background: url(bg-player-control.png) 0 0 repeat-x;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+	.canvas-player-header span{
+		height: 35px;
+		line-height:35px;
+		text-align:left;
+		margin-left:10px;
+		font-size:12px;
+		font-family:"Microsoft Yahei";
+		color:#FFFFFF;
+		letter-spacing:2px;
+	}
+	/*canvas-player controls*/
+	.canvas-player-controls {
+		height: 40px;background-color:#c5efff;
+		/*background: url(../img/bg-player-control.png) 0 0 repeat-x;
+		border: 1px solid #060001;*/
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+		/*canvas-player progess*/
+		.canvas-player-progress {
+			float:left;
+			width:57%;
+			margin:10px;
+		}
+		.ui-slider-horizontal {
+			height: 5px;
+			margin-top: 17px;
+		}
+		.ui-widget-content {
+			border: none;
+			background: none;
+			background-color: #999;
+		}
+		.ui-slider-handle .ui-state-focus {
+
+		}
+		.ui-slider-range {
+			background: none;
+			background-color: #00c0ff;
+		}
+		.ui-slider-horizontal .ui-slider-handle {
+			top: -7px;
+		}
+		.ui-slider .ui-slider-handle {
+			width: 20px;
+			height: 22px;
+			background-position: 0 0;
+			cursor: pointer;
+		}
+		/*canvas-player timecount*/
+		.canvas-player-time-count {
+			float: left;
+			margin: 10px 10px 0px;
+			color: #00a8ec;
+		}
+		/*canvas-player volume control*/
+		.canvas-player-volume-control {
+			float: left;
+			cursor: pointer;
+		}
+			.canvas-player-mute {
+				float: left;
+				width: 20px;
+				height: 20px;
+				background-position: 0px -31px;
+			}
+			.canvas-player-mute.muted {
+				background-position: 0px -136px;
+			}
+			.canvas-player-volume {
+				float: left;
+				width: 80px;
+			}
+			.canvas-player-mute {
+				margin: 10px 10px 0px 0px;
+			}
+		.play-stop-control {
+			float: left;
+			margin: 12px 10px 0px 40px;
+		}
+			.stopBtn, .playbtn, .pausebtn {
+				float: left;
+				cursor: pointer;
+			}
+			.playbtn, .pausebtn {
+				width: 14px;
+				height: 16px;
+			}
+			.stopBtn {
+				width: 16px;
+				height: 16px;
+			}
+			.stopBtn {
+				background-position: 0 -56px;
+			}
+			.playbtn {
+				margin-right: 15px;
+				background-position: 0 -80px;
+			}
+			.playbtn.pausebtn {
+				margin-right: 15px;
+				background-position: 0px -106px;
+			}
+		/*big-play-button*/
+		.big-play-button {
+
+		}
+			.big-play-button-inner {
+				height: 0;
+				width: 0;
+				margin: 13px 0 0 14px;
+				padding: 0;
+				font-size: 0px;
+				line-height: 0%;
+				border-top: 12px solid transparent;
+				border-left: 24px solid #fff;
+				border-bottom: 12px solid transparent;
+			}
+
+
+#fullbg{background-color:#ffffff;display:none;z-index:3;position:absolute;left:0px;top:0px;filter:Alpha(Opacity=30);/* IE */-moz-opacity:0.4;/* Moz + FF */opacity: 0.4;}
+#dialog {position:absolute;width:200px;height:auto; padding-bottom:10px;background:#F00;display: none;z-index: 5;background:#FFF;}
+
+#canvas-player-fullscreen-control {
+  margin-left: 20px;
+  margin-top: 12px;
+  float: left;
+  cursor: pointer;
+  color: #12B4F5;
+  display: none;
+}
+
+.big_play_icon {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: .7;
+  cursor: pointer;
+}

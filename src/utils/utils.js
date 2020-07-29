@@ -32,7 +32,7 @@ export function filter_unvalid_space(str) {
  */
 export function Token() {
   var arr, reg = new RegExp("(^| )platform_token=([^;]*)(;|$)"); //正则匹配
-  if (arr = document.cookie.match(reg)) {
+  if (arr === document.cookie.match(reg)) {
     return unescape(arr[2]);
   }
   else {

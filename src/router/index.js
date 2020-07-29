@@ -1,7 +1,12 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Index from '@/pages/index/index.vue';
 import Home from '@/pages/home/index.vue';
-import Statistic from '@/pages/statistic/index.vue';
+import Test from '@/pages/statistic/index.vue';
+import Echarts from '@/pages/echarts/echarts.vue';
+import Editor from '@/pages/editor/index.vue';
+import Evk from '@/pages/evk/evk.vue';
+import Wkdemo from '@/pages/wkdemo/wkdemo.vue';
 
 Vue.use(Router)
 
@@ -24,18 +29,42 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: '/',
+      name: 'index',
+      component: Index,
       redirect: { name: 'home' },
+      children: [
+        {
+          path: '/home',
+          name: 'home',
+          component: Home,
+        },
+        {
+          path: '/test',
+          name: 'test',
+          component: Test,
+        },
+        {
+          path: '/echarts',
+          name: 'echarts',
+          component: Echarts,
+        },
+        {
+          path: '/evk',
+          name: 'evk',
+          component: Evk,
+        },
+        {
+          path: '/editor',
+          name: 'editor',
+          component: Editor,
+        },
+        {
+          path: '/wkdemo',
+          name: 'wkdemo',
+          component: Wkdemo,
+        },
+      ]
     },
-    {
-      path: '/home',
-      name: 'home',
-      component: Home,
-    },
-    {
-      path: '/statistic',
-      name: 'statistic',
-      component: Statistic,
-    }
+
   ]
 })

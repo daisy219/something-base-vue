@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>HTML5-Audio</title>
+		<link rel="stylesheet" href="jquery-ui.css" />
+		<link rel="stylesheet" href="play.css">
+		<script src="jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="jquery-ui.js"></script>
+		<script type="text/javascript" src="flash/flowplayer-3.2.11.min.js"></script>
+		<!-- <script type="text/javascript" src="flash/flowplayer-3.2.10.js"></script> -->
+		<script type="text/javascript" src="fastclick.js"></script>
+		<script type="text/javascript" src="util.js"></script>
+		<script type="text/javascript" src="player-min.js?r=1"></script>
+		<script type="text/javascript" src="player-min2.js"></script>
+    <script type="text/javascript">
+    $(function() {
+      FastClick && FastClick.attach(document.body);
+    });
+
+    function is_mobile() {
+      var sUserAgent = (navigator.userAgent || '').toLowerCase();
+      var match = function (reg, ms) {
+        return (sUserAgent.match(reg) || '')[0] === ms;
+      }
+
+      var bIsIpad = match(/ipad/i, 'ipad');
+      var bIsIphoneOs = match(/iphone os/i, 'iphone os');
+      var bIsMidp = match(/midp/i, 'midp');
+      var bIsUc7 = match(/rv:1.2.3.4/i, 'rv:1.2.3.4');
+      var bIsUc = match(/ucweb/i, 'ucweb');
+      var bIsAndroid = match(/android/i, 'android');
+      var bIsCE = match(/windows ce/i, 'windows ce');
+      var bIsWM = match(/windows mobile/i, 'windows mobile');
+
+      if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {
+          return true;
+      } else {
+          return false;
+      }
+    }
+    var isiOS = !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    // ###################################### CONFIG BEGIN ######################################
+    // --------------------- url params ---------------------
+    // imgpath string       图片数组字符串，逗号分隔
+    // audiopath string     音频地址
+    // jsonpath string      json文件地址
+    // psize string         播放器宽高: 例 '760,610'
+    // type number          1为evk播放器
+    // inittime number      初始播放进度
+    // fullscreen 0|1       1: 有播放按钮
+
+    // --------------------- iframe parent window method ---------------------
+    // EVK_PLAYER_cease_event_handler:         停止播放事件
+    var PARENT_WINDOW_METHODS = [
+      'EVK_PLAYER_esc_event_handler',           // esc 按钮事件
+      'EVK_PLAYER_start_or_stop_event_handler', // 播放/暂停事件
+      'EVK_PLAYER_cease_event_handler',         // 停止播放事件
+      'EVK_PLAYER_fullscreen_event_handler'     // 全屏按钮事件
+    ];
+
+    // --------------------- current public method ---------------------
+    // 播放
+    function EVK_PLAYER_start_play_method() {
+      if ( ! window.pause) { return; }
+      $('#playBtn').click();
+    }
+    // 暂停
+    function EVK_PLAYER_pause_play_method() {
+      if (window.pause) { return; }
+      $('#playBtn').click();
+    }
+    // 获取播放进度
+    function EVK_PLAYER_get_play_progress_value() {
+      return $("#canvas-player-progress").slider('value') || 0;
+    }
+
+    // ###################################### CONFIG END ######################################
+
+    // 执行 parent window method
+    function callParentWindowMethod(method_name, params) {
+      var parentWindow = parent.window;
+      function error_msg() {
+        console.error('EVK PLAYER: parent.window 没有该方法 - ', method_name);
+      }
+
+      if (PARENT_WINDOW_METHODS.indexOf(method_name) === -1) {
+        error_msg();
+        return;
+      }
+      if ( ! parentWindow || ! parentWindow[method_name]) {
+        error_msg();
+        return;
+      }
+
+      try {
+        parentWindow[method_name](params);
+      } catch (err) {
+        error_msg();
+        console.error(err);
+      }
+    }
+
+		//获取URL参数
+		function getUrlParam(name)
+		{
+			var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+			var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+			if (r!=null) return unescape(r[2]); return null; //返回参数值
+    }
+    // 浏览器版本判断
+    function get_ie_version() {
+      var userAgent = navigator.userAgent;
+      var isIE = userAgent.indexOf("compatible") > -1 && userAgent.indexOf("MSIE") > -1; // 判断是否 IE < 11 浏览器
+      var isEdge = userAgent.indexOf("Edge") > -1 && !isIE; // 判断是否 IE 的 Edge 浏览器
+      var isIE11 = userAgent.indexOf('Trident') > -1 && userAgent.indexOf("rv:11.0") > -1;
+
+      if(isIE) {
+          var reIE = new RegExp("MSIE (\\d+\\.\\d+);");
+          reIE.test(userAgent);
+          var fIEVersion = parseFloat(RegExp["$1"]);
+          if (fIEVersion == 7) {
+              return 7;
+          } else if (fIEVersion == 8) {
+              return 8;
+          } else if (fIEVersion == 9) {
+              return 9;
+          } else if(fIEVersion == 10) {
+              return 10;
+          } else {
+              return 6; // IE版本 <= 7
+          }
+      } else if (isEdge) {
+          return 'edge'; // edge
+      } else if (isIE11) {
+          return 11; // IE11
+      } else {
+          return -1; //不是ie浏览器
+      }
+    }
+    // 是否展示 big play 按钮 (移动端展示)
+    window.show_big_play_btn = function () {
+      if ( ! is_mobile()) return;
+      $('.big_play_icon').show();
+    }
+    window.hide_big_play_btn = function () {
+      if ( ! is_mobile()) return;
+      $('.big_play_icon').hide();
+    }
+		</script>
+		<script>
+			var defaultPlayerW = 960;
+			var defaultPlayerH = 520;
+			var playerControl = 40;//播放器控制面板高度
+			var playerHeader = 40;//播放器头部高度
+			var playerMain = 560;//播放器的主体高度
+            var size;
+			var q_img = "";//题目图片路径
+			var q_json = "";//题目轨迹路径
+			var q_audio = "";//题目音频路径
+			var path='',flag=0;
+			var pre = 1;//轨迹、题目图片需要缩略或扩大的比例
+			path = getUrlParam('path');
+			pre = getUrlParam('pre');
+			flag = getUrlParam('flag');//是否显示头部
+
+			isAutoPlay = getUrlParam('play');
+			if(path==null){
+				//当请求无参数时处理异常
+			//	path = "";
+			}
+			if(pre==null){
+				pre = 1;
+			}
+			if(isAutoPlay==null || (isAutoPlay!=null && parseInt(isAutoPlay,10)==1)){
+				isAutoPlay = true;
+			}else{
+				isAutoPlay = false;
+			}
+
+			q_img = getUrlParam('imgpath');
+			q_json = getUrlParam('jsonpath');
+			q_audio = getUrlParam('audiopath');
+			isCross = getUrlParam('cross');
+			htid = getUrlParam('id');
+
+
+			$(function(){
+				var playerW	 = defaultPlayerW;//$(window).width();//播放时默认播放器宽度
+				var playerH	 = defaultPlayerH;//$(window).height()-40;//播放时默认播放器高度
+
+				if(getUrlParam('psize')!=null){
+					var temp = getUrlParam('psize').split(',');
+					playerW = (typeof(temp[0])!='undefined') ? temp[0] : playerW;//播放时自定义播放器宽度（用户可自定义）
+					playerH = (typeof(temp[1])!='undefined') ? temp[1] : playerH;//播放时自定义播放器高度（用户可自定义）
+				}
+
+				playerW = parseInt(playerW,10);
+				playerH = parseInt(playerH,10);
+				playerMain = playerH;
+
+				playerH = playerH - playerControl;//播放区域去除播放器控制器区域高度
+				if(flag!=null && flag==1){
+					playerH = playerH - playerHeader;//播放区域去除播放器头部区域高度
+				}
+
+				if(pre!=1){
+					resizePlayer(playerW,playerH,pre);
+
+					initPlayer(pre);
+				}
+				else if(getUrlParam('size')!=null){
+					 size = getUrlParam('size').split(',');//录制时播放器大小[宽度,高度]，根据微课大师录制区域大小设置
+				//	pre = (w/playerW < ((h)/playerH))? (w/playerW) : ((h)/playerH);
+					resizePlayer(playerW,playerH,1);
+
+					if(typeof(size)!='undefined' && size!=null){//计算录制与播放时的区域差比值
+						pre = (playerW/size[0] < playerH/size[1])? (playerW/size[0]) : (playerH/size[1]);
+					}
+
+					initPlayer(pre);
+				}else{
+					if((q_json==null || q_json=="") && (path==null && path=="")){
+						resizePlayer(playerW,playerH,1);
+						initPlayer(pre);
+						return;
+					}
+
+					getPlayerSize({"jsonPath":q_json,"path":path},function(size){
+					//	pre = (w/playerW < ((h)/playerH))? (w/playerW) : ((h)/playerH);
+						resizePlayer(playerW,playerH,1);
+
+						//当返回值为空时，获取图片大小，以正确显示图片样式
+						/*if(size==null && ((q_img!=null && q_img!="") || (path!=null && path!=""))){
+							var image=new Image();
+							image.src=(path!=null && path!="") ? path + "/q.gif" : q_img;
+							defaultPlayerW = image.width;
+							defaultPlayerH = image.height;
+						}*/
+
+					//	size = (size==null) ? [playerW,playerH] : size;
+						size = (size==null) ? [defaultPlayerW,defaultPlayerH] : size;
+						if(typeof(size)!='undefined' && size!=null){//计算录制与播放时的区域差比值
+							pre = (playerW/size[0] < playerH/size[1])? (playerW/size[0]) : (playerH/size[1]);
+						}
+
+						initPlayer(pre);
+
+					});//录制时播放器大小[宽度,高度]，根据微课大师录制区域大小设置
+				}
+			});
+			/*
+			初始化播放器
+			pre = 缩放比例
+			*/
+			function initPlayer(pre){
+				$("#questionIMG").on("load",function(){
+					var realImg = document.createElement("img");
+					realImg.src = $(this).attr('src');
+				//	$(this).hide();
+					setTimeout(function(){
+                       	var screenbodyWidth=document.body.clientWidth;
+                        var divbodyWidth=screenbodyWidth-screenbodyWidth*0.1;
+						var imgWidth = realImg.width * pre;
+						var imgHeight = realImg.height * pre;
+						$("#questionIMG").width(imgWidth);
+						$("#questionIMG").height(imgHeight);
+						$("#questionIMG").show();
+//                        $("#questionIMG").css("margin-left",(divbodyWidth-imgWidth)/2);
+					},200);
+				});
+				$("#questionIMG").on("error",function(){
+					$(this).hide();
+				});
+
+				var canvasId = "myCanvas";
+				var option = {"canvasId":canvasId,"imgPath":q_img,"jsonPath":q_json,"audioPath":q_audio,"path":path,"pre":pre,"success":function(json){
+
+				}};
+				loadPlayer(option);
+			}
+
+			function loadPlayer(option){
+				if(typeof(option.canvasId)=="undefined" || option.canvasId==""){
+					option.canvasId = "myCanvas";
+				}
+				if((option.path!=null && option.path!="") || (option.jsonPath!=null && option.jsonPath!="" && option.audioPath!=null && option.audioPath!="")){
+					initData(option,function(){
+						//	closeBg();
+						$("#playBtn").removeAttr("onclick");
+						$("#stopBtn").removeAttr("onclick");
+						eval(error_tip);
+					});
+					return;
+				}
+			}
+			/*根据播放器高宽进行重构
+			playerW = 播放器宽度
+			playerH = 播放器高度
+			pre = 比例值（默认为1）
+			*/
+			function resizePlayer(playerW,playerH,pre){
+				//var w = 1430,h=856;
+				//pre = (w/playerW < ((h)/playerH))? (w/playerW) : ((h)/playerH);
+				/*
+				if(flag!=null){
+					if($(window).height()==0){
+						$("#main").height(560);
+					}else{
+						$("#main").height($(window).height()-40);
+					}
+
+					$("#canvas-player-header").show();
+				}
+				*/
+				if(flag!=null && flag==1){
+					$("#canvas-player-header").show();
+				}
+				var screennWidth=document.body.clientWidth;
+                var divbodyWidth=screennWidth-screennWidth*0.1;
+				$("#main").width(playerW*pre);
+				$("#main").height((playerMain)*pre);
+				$("#showDiv").width(playerW*pre);
+				$("#showDiv").height((playerH)*pre);
+//                $("#showDiv").css("margin-left",(divbodyWidth-playerH*pre)/2);
+                $("#main").css("margin-top","25px");
+
+				if(getUrlParam('height')!=null){
+					var _h = parseInt(getUrlParam('height'),10)-80;
+					if(_h>$("#showDiv").height()){
+						$("#showDiv").height(_h);
+					}
+				//	alert(pre+"="+$("#showDiv").height()+","+getUrlParam('height'));
+				}
+
+			//	$("#questionDiv").width(playerW*pre);
+			//	$("#questionDiv").height(playerH*pre);
+				//alert($("#canvas-player-progress").width()+"*"+pre+"="+($("#canvas-player-progress").width()*pre));
+				if(pre<1){
+					$("#canvas-player-progress").width($("#canvas-player-progress").width()*pre);
+				}
+				$("#myCanvas").attr("width",$("#showDiv").width());
+				$("#myCanvas").attr("height",$("#showDiv").height());
+
+				$("#current_time").html(getTimeStr(0));
+				$("#total_time").html(getTimeStr(0));
+
+				$("#questionDiv").width($("#showDiv").width());
+				$("#questionDiv").height($("#showDiv").height());
+				$("#questionDiv").css("left",$("#showDiv").offset().left+$("#showDiv").parent().css("border"));
+			//	$("#questionDiv").css("top",$("#showDiv").offset().top);
+				$("#questionDiv").css("top",0);
+
+
+        //播放按钮85，时间121，声音110，预留20，共350
+        var has_fullscreen_btn = getUrlParam('fullscreen') == '1';
+        var fullscreen_btn_space = has_fullscreen_btn ? 100 : 0;
+        var w = $('#canvas-player-controls').width()-350-fullscreen_btn_space;
+        $('#canvas-player-fullscreen-control')[(has_fullscreen_btn && !window.is_mobile()) ? 'show' : 'hide'](); // 隐藏或显示全屏控制按钮
+
+				if(w>100){
+					$('#canvas-player-progress').width(w);
+				}else{
+					$("#canvas-player-volume-control").hide();
+				}
+				$('#canvas-player-progress').slider();
+				$('#canvas-player-volume').slider();
+				$("#questionIMG").hide();
+
+				if(path==null && q_audio==null){
+				//	loading('加载有问题');
+					return;
+				}else{
+					$("#dialog_loading").hide();
+					$("#dialog_content").hide();
+					showBg('dialog','dialog_content');
+					$("#playBtn").attr("disabled","disabled");
+					$("#stopBtn").attr("disabled","disabled");
+				}
+			}
+			function goBack(){
+				if(parent.hidePlayer){
+					parent.hidePlayer();
+				}
+			}
+
+			$(window).bind('touchmove',function(evt){
+				unMove(evt);
+				evt.preventDefault();
+				return;
+			});
+			$(window).bind('scrollstop',function(evt){
+				unMove(evt);
+				evt.preventDefault();
+				return;
+			});
+			$(window).bind('touchend',function(evt){
+				unMove(evt);
+				evt.preventDefault();
+				return;
+			});
+			function unMove(evt){
+				$(window).scrollTop(0);
+				$(window).scrollLeft(0);
+      }
+		</script>
+	</head>
+	<style>
+	.play-stop-control {
+		float: left;
+		margin: 12px 10px 0 5%;
+		margin: 12px 10px 0 30px;
+	}
+	.main{
+		width:960px;height:560px; margin:0 auto;border:0px solid #060001;
+	}
+	.border{
+		border:0px solid #d9d9d9;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;
+	}
+    .black {
+        background: -moz-linear-gradient(center top , #666666, #000000) repeat scroll 0 0 transparent;
+        border: 1px solid #333333;
+        color: #D7D7D7;
+    }
+    .button {
+        border-radius: 0.5em 0.5em 0.5em 0.5em;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        display: inline-block;
+        font: 14px/100% Arial,Helvetica,sans-serif;
+        margin: 0 2px;
+        outline: medium none;
+        padding: 0.5em 2em 0.55em;
+        text-align: center;
+        text-decoration: none;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        vertical-align: baseline;
+    }
+    a {
+        color: #333399;
+        text-decoration: none;
+    }
+	</style>
+
+	<body>
+		<div id="main" style="width:960px;height:560px; margin:0 auto;border:0px solid #060001;">
+			<div id="canvas-player-header" class="canvas-player-header clearfix" style="display:none;">
+				<span>题目讲解</span>
+				<a class="button black" href="javascript:goBack();" style="float:right;margin-top:5px;">返回</a>
+			</div>
+			<div style="margin:0 auto;position:relative;">
+				<div id='showDiv' style='width:960px;height:520px; position:relative;z-index:999;' >
+					<canvas id="myCanvas" width="960" height="520" style="border:0px solid;">您的浏览器还不支持哦</canvas>
+          <div id="mouseDiv" style=" position:absolute;top:0px;left:0px; width:32px;height:32px; background-image:url(mouse.png); z-index:999; display:none;"></div>
+          <!-- 大个的播放图标 -->
+          <img class="big_play_icon" src="big_play.png" />
+				</div>
+				<div id='questionDiv' style='width:960px;height:520px;position:absolute;border:0px solid;z-index:99;background:#fff;'>
+					<img id="questionIMG" src="" style ="display:none;">
+				</div>
+			</div>
+			<div id="canvas-player-controls" class="canvas-player-controls clearfix" style="position:absolute;bottom:0;left:0;width:100%;z-index:99;">
+				<div class="play-stop-control">
+					<div id="playBtn" onClick="" class="playbtn" title="播放"></div>
+					<div id="stopBtn" class="stopBtn" onClick="" title="停止"></div>
+				</div>
+				<div id="canvas-player-progress" class="canvas-player-progress"></div>
+				<div id="canvas-player-time-count" class="canvas-player-time-count">
+					<div id="current_time" style="float:left;"></div>
+					<div style="margin-left:8px;float:left;">/</div>
+					<div id="total_time" style="margin-left:8px;float:left;"></div>
+				</div>
+				<div id="canvas-player-volume-control" class="canvas-player-volume-control">
+					<div class="canvas-player-mute" id="canvas-player-mute" title="扬声器" muted="false"></div>
+					<div id="canvas-player-volume" class="canvas-player-volume"></div>
+        </div>
+        <div id="canvas-player-fullscreen-control">全屏</div>
+			</div>
+		</div>
+		<audio id="myMusic" controls="false" style="width:0;height:0;display:none;"></audio>
+		<div id="fullbg"></div>
+		<div id="dialog">
+			<div><center><img src="loading.gif"/></center></div>
+			<div id="dialog_content"></div>
+		</div>
+		<input type="hidden" id="htid" name="htid">
+	</body>
+	<script type="text/javascript">
+	$(function(){
+    $('#htid').val(htid);
+
+    // 全屏按钮点击事件
+    $('#canvas-player-fullscreen-control').click(function () {
+      window.callParentWindowMethod('EVK_PLAYER_fullscreen_event_handler');
+    });
+
+    // ios 自动播放有问题
+    if (is_mobile()) {
+      $('.big_play_icon').show();
+      $('#showDiv').click(function () {
+        $('#playBtn').click()
+      })
+    }
+	});
+	</script>
+</html>

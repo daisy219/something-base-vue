@@ -5,7 +5,23 @@ export const MODULES_INFO = [
     route: 'home',
   },
   {
-    name: 'statistic',
-    route: 'statistic',
+    name: 'test',
+    route: 'test',
   },
+  {
+    name: 'echarts',
+    route: 'echarts',
+  },
+  // {
+  //   name: 'evk',
+  //   route: 'evk',
+  // },
+  // {
+  //   name: 'editor',
+  //   route: 'editor',
+  // },
+  // {
+  //   name: 'wkdemo',
+  //   route: 'wkdemo',
+  // },
 ];

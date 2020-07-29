@@ -20,13 +20,12 @@ export default {
 }
 </script>
 <template>
-<layout>
+
   <div class="module_home_index common_page_container">
     <div class="title">
       主页
     </div>
   </div>
-</layout>
 </template>
 <style scoped lang="stylus">
 .module_home_index

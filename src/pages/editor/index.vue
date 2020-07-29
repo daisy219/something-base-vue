@@ -80,7 +80,7 @@ export default {
 }
 </script>
 <template>
-  <div class="module_ewebeditor">
+  <div class="module_ewebeditor common_page_container">
     <input type="hidden" :name="`content${editor_key}`" :value="value" />
     <iframe ref="iframe" class="eWebEditor" :src="'http://www.ischool365.com:11582' + editor_src"
       frameborder="0" scrolling="no" :width="width" :height="height"

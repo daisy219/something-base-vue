@@ -13,10 +13,10 @@ export default {
       console.log(event)
       // console.log(this.$refs.wk.attributes.href)
       console.log(window);
-        window.protocolCheck($(this).attr("href"),
-            function () {
-                alert("protocol not recognized");
-            });
+        // window.protocolCheck($(this).attr("href"),
+        // function () {
+        //     alert("protocol not recognized");
+        // });
         // event.preventDefault ? event.preventDefault() : event.returnValue = false;
 
 
@@ -33,7 +33,9 @@ export default {
 }
 </script>
 <template>
-  <a @click="get_down_upload_info" :href="url">微课大师</a>
+  <div class="common_page_container">
+    <a @click="get_down_upload_info" :href="url">微课大师</a>
+  </div>
   <!-- <a @click="get_down_upload_info" ref="wk">微课大师</a> -->
 </template>
 

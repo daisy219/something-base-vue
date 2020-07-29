@@ -45,13 +45,13 @@ export default {
 }
 </script>
 <template>
-  <div>
+  <div class="common_page_container">
     <!-- <iframe ref="iframe" class="eWebEditor" :src="'http://www.ischool365.com:11582' + iframe_src" :key="iframe_src"
     :style="{width: this.player_width + 'px', height: this.player_height + 'px'}"
     frameborder="0" scrolling="no"/> -->
     <!-- <iframe src="http://www.ischool365.com:11582/group1/M00/19/9D/CgoKc1yQmmyAKF9QAAD-v7WUUBM752.png" frameborder="0"/> -->
   </div>
 </template>
-<style lang="scss">
+<style>
 
 </style>
