@@ -11,12 +11,13 @@
       </template>
       <!-- 单选 -->
       <div v-if="type==='single'" class="block fl">
-        <p class="single-text" v-for="(item, index) in listConfig" :key="index">{{item.label}}</p>
+        <p class="single-text" v-for="(item, index) in listConfig" :key="index" @click="singleChoose(item)">{{item.label}}</p>
       </div>
       <!-- 已选 -->
       <div v-if="type==='select'" class="block fl">
         <p class="select-text" v-for="(item, index) in listConfig" :key="index">{{item.label}}<i class="el-icon-close" @click="close(item)"></i></p>
       </div>
+      <el-button v-if="type==='select'" type="primary" plain size="small" @click="$emit('clearout')">清除全部</el-button>
       <span class="title fl pointer" v-if="showMoreBtn" @click="showMore = !showMore">更多<i :class="`el-icon-arrow-${showMore ? 'down' : 'up'}`"></i></span>
     </div>
   </div>
@@ -26,6 +27,7 @@
 export default {
   props: {
     type: { type: String, default: 'single' },
+    filterKey: { type: String, default: '' },
     title: { type: String, default: '' },
     listConfig: { type: Array, default() { return []; } }
   },
@@ -48,12 +50,18 @@ export default {
     }
   },
   methods: {
+    /** 多选 */
     changeHandle(checked, item) {
       // console.log(checked, item);
       this.$emit('change-handle', checked, item);
     },
     close(item) {
       this.$emit('colse', item);
+    },
+    /** 单选 */
+    singleChoose(item) {
+      this.$set(item, 'filterKey', this.filterKey);
+      this.$emit('single-choose', this.filterKey, item);
     }
   }
 
@@ -83,6 +91,7 @@ export default {
       line-height: 20px;
       padding: 4px;
       margin-right: 10px;
+      margin-bottom: 10px;
       display: inline-block;
       border 1px solid #b3d8ff;
       color: #409EFF;

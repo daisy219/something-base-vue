@@ -7,9 +7,9 @@
           <el-row>
             <el-col :span="4" class="center">从</el-col>
             <el-col :span="16">
-              <el-form-item prop="start">
+              <el-form-item :prop="type === 'input' ? 'start' : 'startDate'">
                 <el-input-number v-show="type === 'input'" size="mini" v-model="form.start" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
-                <el-date-picker v-show="type === 'date'" value-format="yyyy-mm" v-model="form.start" type="year" size="mini" placeholder="选择年" @change="chooseHandle" />
+                <el-date-picker v-show="type === 'date'" v-model="form.startDate" type="year" size="mini" placeholder="选择年" @change="(value) => chooseHandle('start', value)" />
               </el-form-item>
             </el-col>
             <el-col :span="4" class="center">{{ labelText }}</el-col>
@@ -17,9 +17,9 @@
           <el-row>
             <el-col :span="4" class="center">从</el-col>
             <el-col :span="16">
-              <el-form-item prop="end">
+              <el-form-item :prop="type === 'input' ? 'end' : 'endDate'">
                 <el-input-number v-show="type === 'input'" size="mini" v-model="form.end" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
-                <el-date-picker v-show="type === 'date'" value-format="yyyy-mm" v-model="form.end" type="year" size="mini" placeholder="选择年" @change="chooseHandle"/>
+                <el-date-picker v-show="type === 'date'" v-model="form.endDate" type="year" size="mini" placeholder="选择年" @change="(value) => chooseHandle('end', value)"/>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="center">{{ labelText }}</el-col>
@@ -39,6 +39,8 @@ export default {
     return {
       hideOnClick: false,
       form: {
+        startDate: undefined,
+        endDate: undefined,
         start: undefined,
         end: undefined,
       },
@@ -47,6 +49,12 @@ export default {
           { required: true, message: '请输入正确格式', trigger: 'blur' },
         ],
         end: [
+          { required: true, message: '请输入正确格式', trigger: 'blur' },
+        ],
+        startDate: [
+          { required: true, message: '请输入正确格式', trigger: 'blur' },
+        ],
+        endDate: [
           { required: true, message: '请输入正确格式', trigger: 'blur' },
         ],
       }
@@ -62,21 +70,28 @@ export default {
 
     },
     visibleChange(value) {
+      console.log(value);
       if (value) {
         this.$refs.form.resetFields();
       }
     },
-    chooseHandle(value) {
+    chooseHandle(type, value) {
+      this.$set(this.form, type, new Date(value).getFullYear());
       this.$refs.elDropdown.show();
+    },
+    sort(a, b) {
+      return a - b;
     },
     comfirm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          const params = {
-            label: this.form
-          }
           console.log(this.form);
-          // this.$emit('confirm', this.form);
+          const sortArr = [this.form.start, this.form.end].sort(this.sort);
+          const params = {
+            label: `${sortArr[0]}-${sortArr[1]}${this.labelText}`,
+            value: `${sortArr[0]}-${sortArr[1]}${this.labelText}`
+          }
+          this.$emit('confirm', params);
           this.$refs.elDropdown.hide();
         }
       })
