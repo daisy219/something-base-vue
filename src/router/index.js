@@ -4,9 +4,9 @@ import Index from '@/pages/index/index.vue';
 import Home from '@/pages/home/index.vue';
 import Test from '@/pages/statistic/index.vue';
 import Echarts from '@/pages/echarts/echarts.vue';
-import Editor from '@/pages/editor/index.vue';
-import Evk from '@/pages/evk/evk.vue';
-import Wkdemo from '@/pages/wkdemo/wkdemo.vue';
+// import Editor from '@/pages/editor/index.vue';
+// import Evk from '@/pages/evk/evk.vue';
+// import Wkdemo from '@/pages/wkdemo/wkdemo.vue';
 
 Vue.use(Router)
 
@@ -48,21 +48,21 @@ export default new Router({
           name: 'echarts',
           component: Echarts,
         },
-        {
-          path: '/evk',
-          name: 'evk',
-          component: Evk,
-        },
-        {
-          path: '/editor',
-          name: 'editor',
-          component: Editor,
-        },
-        {
-          path: '/wkdemo',
-          name: 'wkdemo',
-          component: Wkdemo,
-        },
+        // {
+        //   path: '/evk',
+        //   name: 'evk',
+        //   component: Evk,
+        // },
+        // {
+        //   path: '/editor',
+        //   name: 'editor',
+        //   component: Editor,
+        // },
+        // {
+        //   path: '/wkdemo',
+        //   name: 'wkdemo',
+        //   component: Wkdemo,
+        // },
       ]
     },
 

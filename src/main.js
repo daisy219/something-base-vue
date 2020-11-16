@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 
 import ElementUI from 'element-ui';
-import Ewebeditor from '@/pages/editor/index.vue';
+// import Ewebeditor from '@/pages/editor/index.vue';
 
 import '@/assets/stylus/reset.styl';
 import '@/assets/stylus/index.styl';
@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 
 
 Vue.component('layout', Layout);
-Vue.component('editor', Ewebeditor);
+// Vue.component('editor', Ewebeditor);
 
 Vue.use(ElementUI);
 

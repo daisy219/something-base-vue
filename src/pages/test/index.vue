@@ -38,7 +38,7 @@
                 <span class="underline fr" @click.stop="" slot="reference">号码反馈</span>
               </el-popover>
             </p>
-            <!-- <span class="good" v-if="item.isRecommend"><img src="../../assets/good.svg" alt="" srcset="">推荐</span> -->
+            <span class="good" v-if="item.isRecommend"><img src="../../assets/good.svg" alt="" srcset="">推荐</span>
             <span class="checked">
               <i class="el-icon-check"></i>
             </span>
@@ -58,13 +58,13 @@ export default {
   },
   data() {
     return {
-      drawer: true,
+      drawer: false,
       direction: 'rtl',
       tabList: [
-        { title: '全部', list: [{contactName: 11}] },
-        { title: '手机', list: [{type: 1, contactName: 22}] },
-        { title: '固话', list: [{type: 2, contactName: 33}] },
-        { title: '邮箱', list: [{type: 3, contactName: 44}] },
+        { title: '全部', list: [] },
+        { title: '手机', list: [] },
+        { title: '固话', list: [] },
+        { title: '邮箱', list: [] },
       ],
       nowShowPhoneList: [],
       showIndex: 0,
@@ -73,7 +73,7 @@ export default {
       numberFeedBack: ['正常号码', '空号', '停机', '不在服务区', '拒接', '错号', '关机'],
       checkList: [],
       // 抽屉浮动
-      position: false,
+      position: false
     }
   },
   props: {
@@ -188,7 +188,7 @@ export default {
       this.nowShowPhoneList = this.tabList[index].list
 
       console.log(this.nowShowPhoneList)
-      // console.log(this)
+      console.log(this)
     },
     showPop(item) {
       if (item.visible) {
@@ -204,7 +204,6 @@ export default {
         this.$message.warning('至少选择一项')
       }
     },
-
     lookNumber() {
       //       description:
       // 联系方式表
@@ -258,7 +257,7 @@ export default {
 }
 </script>
 
-<style lang='stylus' scoped>
+<style lang='scss' scoped>
 .number_box {
   width: 300px;
   background: #fff;

@@ -25,6 +25,13 @@ export default {
       ],
       province: areaCode,
       industry: category,
+      selectObject: {
+        province: [],
+        city: [],
+        industry: [],
+        time: [],
+        money: [],
+      },
       selectList: [],
     }
 
@@ -32,6 +39,9 @@ export default {
   props: {
   },
   computed: {
+    // selectList() {
+      
+    // }
   },
   created() {
     // this.province = areaCode;
@@ -39,8 +49,19 @@ export default {
   mounted() {
   },
   methods: {
-    changeHandle(val) {
-      this.selectList = val;
+    changeHandle(checked, item) {
+      if (checked) {
+        this.selectList.push(item);
+      } else {
+        const index = this.selectList.findIndex(a => a.value === item.value);
+        this.selectList.splice(index, 1);
+      }
+    },
+    colse(item) {
+      const current = this.selectList.find(a => a.value === item.value);
+      this.$set(current, 'checked', false);
+      const index = this.selectList.findIndex(a => a.value === item.value);
+      this.selectList.splice(index, 1);
     }
 
   },
@@ -50,13 +71,13 @@ export default {
   <div class="module_home_index common_page_container">
     <line-filter :title="'所属省份'" :list-config="province" :key="'province'" :type="'single'" />
     <line-filter :title="'所属行业'" :list-config="industry" :key="'industry'" :type="'single'" />
-    <line-filter :title="'成立时间'" :list-config="time" :key="'time'" :type="'multiple'">
+    <line-filter :title="'成立时间'" :list-config="time" :key="'time'" :type="'multiple'" @change-handle="changeHandle">
       <dropDown :type="'date'" :label-text="'年'"/>
     </line-filter>
     <line-filter :title="'注册资本'" :list-config="money" :key="'money'" :type="'multiple'" @change-handle="changeHandle">
       <dropDown />
     </line-filter>
-    <line-filter :title="'已选条件'" :list-config="selectList" :key="'select'" :type="'select'" />
+    <line-filter :title="'已选条件'" :list-config="selectList" :key="'select'" :type="'select'" @colse="colse"/>
   </div>
 </template>
 <style scoped lang="stylus">

@@ -9,7 +9,7 @@
             <el-col :span="16">
               <el-form-item prop="start">
                 <el-input-number v-show="type === 'input'" size="mini" v-model="form.start" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
-                <el-date-picker v-show="type === 'date'" v-model="form.start" type="year" size="mini" placeholder="选择年" @change="chooseHandle" />
+                <el-date-picker v-show="type === 'date'" value-format="yyyy-mm" v-model="form.start" type="year" size="mini" placeholder="选择年" @change="chooseHandle" />
               </el-form-item>
             </el-col>
             <el-col :span="4" class="center">{{ labelText }}</el-col>
@@ -19,7 +19,7 @@
             <el-col :span="16">
               <el-form-item prop="end">
                 <el-input-number v-show="type === 'input'" size="mini" v-model="form.end" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
-                <el-date-picker v-show="type === 'date'" v-model="form.end" type="year" size="mini" placeholder="选择年" @change="chooseHandle"/>
+                <el-date-picker v-show="type === 'date'" value-format="yyyy-mm" v-model="form.end" type="year" size="mini" placeholder="选择年" @change="chooseHandle"/>
               </el-form-item>
             </el-col>
             <el-col :span="4" class="center">{{ labelText }}</el-col>
@@ -39,8 +39,8 @@ export default {
     return {
       hideOnClick: false,
       form: {
-        // start: undefined,
-        // end: undefined,
+        start: undefined,
+        end: undefined,
       },
       rules: {
         start: [
@@ -72,8 +72,11 @@ export default {
     comfirm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
+          const params = {
+            label: this.form
+          }
           console.log(this.form);
-          // this.$emit(this.form);
+          // this.$emit('confirm', this.form);
           this.$refs.elDropdown.hide();
         }
       })

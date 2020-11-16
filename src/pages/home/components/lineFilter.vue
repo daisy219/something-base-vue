@@ -1,12 +1,12 @@
 <template>
-  <div class="line-wrap" :style="`height:${wrapHeight}`">
+  <div class="line-wrap" :style="`height:${wrapHeight}`" v-show="listConfig.length !== 0">
     <div class="line clearfix" ref="line">
       <span class="title fl">{{title}}：</span>
       <!-- 多选 -->
       <template v-if="type==='multiple'">
-        <el-checkbox-group v-model="checkList" @change="changeHandle" class="fl">
-          <el-checkbox v-for="(item, index) in listConfig" :key="index" v-bind="item"></el-checkbox>
-        </el-checkbox-group>
+        <div class="fl">
+          <el-checkbox v-for="(item, index) in listConfig" :key="index" v-model="item.checked" @change="(value) => changeHandle(value, item)">{{item.label}}</el-checkbox>
+        </div>
         <slot />
       </template>
       <!-- 单选 -->
@@ -15,7 +15,7 @@
       </div>
       <!-- 已选 -->
       <div v-if="type==='select'" class="block fl">
-        <p class="select-text" v-for="(item, index) in listConfig" :key="index">{{item.label}}<i class="el-icon-close"></i></p>
+        <p class="select-text" v-for="(item, index) in listConfig" :key="index">{{item.label}}<i class="el-icon-close" @click="close(item)"></i></p>
       </div>
       <span class="title fl pointer" v-if="showMoreBtn" @click="showMore = !showMore">更多<i :class="`el-icon-arrow-${showMore ? 'down' : 'up'}`"></i></span>
     </div>
@@ -48,9 +48,12 @@ export default {
     }
   },
   methods: {
-    changeHandle(value) {
-      console.log(value);
-      this.$emit('change-handle', value.map(item => ({label: item})));
+    changeHandle(checked, item) {
+      // console.log(checked, item);
+      this.$emit('change-handle', checked, item);
+    },
+    close(item) {
+      this.$emit('colse', item);
     }
   }
 
