@@ -4,7 +4,9 @@
       <div v-if="item.children && item.children.length !== 0" @click.stop="changeShow(item)">
         {{item.name}}
         <van-icon :class="['fr', item.showChildren ? 'up' : 'down']" name="arrow-down"/>
-        <recursion :data="item.children" :style="`max-height: ${item.showChildren ? '100px' : 0}`" :level="level + 1" @select="selectHandle"/>
+        <my-collapse-transition>
+          <recursion :data="item.children" v-show="item.showChildren" :level="level + 1" @select="selectHandle"/>
+        </my-collapse-transition>
       </div>
       <div v-else @click.stop="selectHandle(item)">
         {{item.name}}
@@ -16,11 +18,13 @@
 
 <script>
 import { Icon } from 'vant';
+import MyCollapseTransition from '@/components/transition.vue';
 
 export default {
   name: 'recursion',
-  components: { 
-    'van-icon': Icon
+  components: {
+    'van-icon': Icon,
+    MyCollapseTransition
   },
   props: {
     data: { type: Array, default() { return []; } },
@@ -40,7 +44,6 @@ export default {
 
 <style lang="stylus">
 .recursion-part {
-  transition all .6s
   .recursion-line {
     line-height 30px
     overflow hidden

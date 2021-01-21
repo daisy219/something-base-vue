@@ -45,5 +45,6 @@ export default {
     </van-popup>
   </div>
 </template>
-<style scoped lang="stylus">
+<style lang="stylus">
+
 </style>
