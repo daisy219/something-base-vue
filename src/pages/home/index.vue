@@ -2,6 +2,8 @@
 import { treeData } from '@/constant/test';
 import { Popup } from 'vant';
 import recursion from './components/recursion';
+import { throttle, debounce } from '@/utils/utils';
+
 export default {
   name: 'home',
   components: { 'van-popup': Popup, recursion },
@@ -30,7 +32,10 @@ export default {
         }
       });
       return newArr;
-    }
+    },
+    inputHandle: throttle((val)=> {
+      console.log('test', val);
+    }),
 
   },
 }
@@ -40,6 +45,7 @@ export default {
     <div class="select-top">
       <div class="select-top-item" @click="show = true">案例推荐</div>
     </div>
+    <input placeholder="请输入内容" @input="inputHandle" />
     <van-popup v-model="show" position="top">
       <recursion :data="treeData" :level="1" @select="selectHandle"/>
     </van-popup>
