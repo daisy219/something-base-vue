@@ -12,6 +12,10 @@ export const MODULES_INFO = [
     name: 'echarts',
     route: 'echarts',
   },
+  {
+    name: '邮箱',
+    route: 'email',
+  },
   // {
   //   name: 'evk',
   //   route: 'evk',

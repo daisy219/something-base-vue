@@ -4,6 +4,7 @@ import Index from '@/pages/index/index.vue';
 import Home from '@/pages/home/index.vue';
 import Test from '@/pages/statistic/index.vue';
 import Echarts from '@/pages/echarts/echarts.vue';
+import Email from '@/pages/email/email.vue';
 // import Editor from '@/pages/editor/index.vue';
 // import Evk from '@/pages/evk/evk.vue';
 // import Wkdemo from '@/pages/wkdemo/wkdemo.vue';
@@ -47,6 +48,11 @@ export default new Router({
           path: '/echarts',
           name: 'echarts',
           component: Echarts,
+        },
+        {
+          path: '/email',
+          name: 'email',
+          component: Email,
         },
         // {
         //   path: '/evk',
