@@ -49,29 +49,38 @@ export default {
       });
       return newArr;
     },
-    inputHandle: throttle((val)=> {
-      console.log('test', val);
-    }),
+    // inputHandle: throttle((val)=> {
+    //   console.log('test', val);
+    // }),
     keyDownHandle(e) {
       if (e.code === 'Space'|| e.key === ';') {
-        this.$refs.select.selectOption()
-        this.value = this.value.map(item => item.trim().split(';').join(''))
+        const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value;
+        if (currentValue.trim().replace(/\.*;/g, '')) {
+          this.$refs.select.selectOption()
+        }
       }
     },
     selectBlur(e) {
       console.log(e);
       this.$refs.select.selectOption()
-    }
+    },
+    inputHandle(val) {
+      const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value;
+      const currentIndex = this.$refs.select.getValueIndex(val, currentValue);
+      if (currentValue.trim().replace(/\.*;/, '')) {
+        this.$set(this.value, currentIndex, `[${currentValue.trim().replace(/\.*;/g, '')}]`);
+      }
+    },
 
   },
 }
 </script>
 <template>
   <div class="module_home_index common_page_container">
-    <div class="select-top">
+    <!-- <div class="select-top">
       <div class="select-top-item" @click="show = true">案例推荐</div>
     </div>
-    <input placeholder="请输入内容" @input="inputHandle" />
+    <input placeholder="请输入内容" @input="inputHandle" /> -->
     <van-popup v-model="show" position="top">
       <recursion :data="treeData" :level="1" @select="selectHandle"/>
     </van-popup>
@@ -85,6 +94,7 @@ export default {
       class="no-drop"
       :popper-append-to-body="false"
       ref="select"
+      @change="inputHandle"
       @blur="selectBlur"
       placeholder="请填写联系人">
       <el-option
