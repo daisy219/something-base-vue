@@ -22,11 +22,25 @@ export default {
           value: 'JavaScript',
           label: 'JavaScript'
         }],
+      // fn: function(){}
     }
 
   },
+  watch: {
+    value: {
+      deep: true,
+      handler(val) {
+        console.log(val)
+        // val.forEach(e=>{
+        //   if(e.trim()){
+
+        //   }
+        // })
+      }
+    }
+  },
   created() {
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener('keyup', (e) => {
       this.keyDownHandle(e)
     })
   },
@@ -53,23 +67,60 @@ export default {
     //   console.log('test', val);
     // }),
     keyDownHandle(e) {
-      if (e.code === 'Space'|| e.key === ';') {
+      console.log(e)
+      if (e.code === 'Space'|| e.code==='Semicolon' ) {
         const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value || '';
+
         if (currentValue.trim().replace(/\.*;/g, '')) {
+          // debugger
+          console.log(this.$refs.select)
+          this.$refs.select.handleOptionSelect = function(option, byClick) {
+            // debugger
+                    if (this.multiple) {
+          const value = (this.value || []).slice();
+          const optionIndex = this.getValueIndex(value, option.value);
+          if (optionIndex > -1) {
+            // value.splice(optionIndex, 1);
+          } else if (this.multipleLimit <= 0 || value.length < this.multipleLimit) {
+            value.push(option.value);
+          }
+          this.$emit('input', value);
+          this.emitChange(value);
+          if (option.created) {
+            this.query = '';
+            this.handleQueryChange('');
+            this.inputLength = 20;
+          }
+          if (this.filterable) this.$refs.input.focus();
+        } else {
+          this.$emit('input', option.value);
+          this.emitChange(option.value);
+          this.visible = false;
+        }
+        this.isSilentBlur = byClick;
+        this.setSoftFocus();
+        if (this.visible) return;
+        this.$nextTick(() => {
+          this.scrollToOption(option);
+        });
+          }
           this.$refs.select.selectOption()
+
+
         }
       }
+
     },
     selectBlur(e) {
       console.log(e);
       this.$refs.select.selectOption()
     },
     inputHandle(val) {
-      const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value || '';
-      const currentIndex = this.$refs.select.getValueIndex(val, currentValue);
-      if (currentValue.trim().replace(/\.*;/, '')) {
-        this.$set(this.value, currentIndex, `[${currentValue.trim().replace(/\.*;/g, '')}]`);
-      }
+      // const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value || '';
+      // const currentIndex = this.$refs.select.getValueIndex(val, currentValue);
+      // if (currentValue.trim().replace(/\.*;/g, '')) {
+      //   this.$set(this.value, currentIndex, `[${currentValue.trim().replace(/\.*;/g, '')}]`);
+      // }
     },
 
   },
