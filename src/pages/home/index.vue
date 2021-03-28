@@ -54,7 +54,7 @@ export default {
     // }),
     keyDownHandle(e) {
       if (e.code === 'Space'|| e.key === ';') {
-        const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value;
+        const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value || '';
         if (currentValue.trim().replace(/\.*;/g, '')) {
           this.$refs.select.selectOption()
         }
@@ -65,7 +65,7 @@ export default {
       this.$refs.select.selectOption()
     },
     inputHandle(val) {
-      const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value;
+      const currentValue = (this.$refs.select.options[this.$refs.select.hoverIndex] || {}).value || '';
       const currentIndex = this.$refs.select.getValueIndex(val, currentValue);
       if (currentValue.trim().replace(/\.*;/, '')) {
         this.$set(this.value, currentIndex, `[${currentValue.trim().replace(/\.*;/g, '')}]`);
