@@ -8,7 +8,7 @@
             <el-col :span="4" class="center">从</el-col>
             <el-col :span="16">
               <el-form-item :prop="type === 'input' ? 'start' : 'startDate'">
-                <el-input-number v-show="type === 'input'" size="mini" v-model="form.start" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
+                <el-input-number v-show="type === 'input'" size="mini" v-model="form.start" controls-position="right" :min="1" :step-strictly="true" />
                 <el-date-picker v-show="type === 'date'" v-model="form.startDate" type="year" size="mini" placeholder="选择年" @change="(value) => chooseHandle('start', value)" />
               </el-form-item>
             </el-col>
@@ -18,7 +18,7 @@
             <el-col :span="4" class="center">从</el-col>
             <el-col :span="16">
               <el-form-item :prop="type === 'input' ? 'end' : 'endDate'">
-                <el-input-number v-show="type === 'input'" size="mini" v-model="form.end" controls-position="right" @change="handleChange" :min="1" :step-strictly="true" />
+                <el-input-number v-show="type === 'input'" size="mini" v-model="form.end" controls-position="right" :min="1" :step-strictly="true" />
                 <el-date-picker v-show="type === 'date'" v-model="form.endDate" type="year" size="mini" placeholder="选择年" @change="(value) => chooseHandle('end', value)"/>
               </el-form-item>
             </el-col>
@@ -66,11 +66,7 @@ export default {
     labelText: { type: String, default: '万' },
   },
   methods: {
-    handleChange(value) {
-
-    },
     visibleChange(value) {
-      console.log(value);
       if (value) {
         this.$refs.form.resetFields();
       }

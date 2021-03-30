@@ -126,3 +126,15 @@ export function debounce(fn) {
     }, 500);
   };
 }
+
+/** 展平多维数组 */
+export function flatten(items, children = 'children') {
+  let newArr = [];
+  items.forEach(item => {
+    newArr.push(item);
+    if (Array.isArray(item[children])) {
+      newArr = newArr.concat(flatten(item[children]));
+    }
+  });
+  return newArr;
+}
