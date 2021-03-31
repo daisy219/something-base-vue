@@ -81,7 +81,6 @@ export default {
     comfirm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          console.log(this.form);
           const sortArr = [this.form.start, this.form.end].sort(this.sort);
           const params = {
             label: `${sortArr[0]}-${sortArr[1]}${this.labelText}`,

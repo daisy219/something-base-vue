@@ -16,7 +16,7 @@
       <dropDown :type="'date'" :label-text="'年'" @confirm="dropDownConfirm"/>
     </line-filter>
     <line-filter :title="'注册资本'" :list-config="money" :key="'money'" :type="'multiple'" @change-handle="changeHandle">
-      <dropDown />
+      <dropDown :type="'input'" :label-text="'万'" @confirm="dropDownConfirm"/>
     </line-filter>
     <line-filter :title="'已选条件'" :list-config="selectList" :key="'select'" :type="'select'" @colse="colse" @clearout="clearout"/>
   </div>
